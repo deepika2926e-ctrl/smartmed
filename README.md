@@ -237,3 +237,5 @@ Render will build the application and issue your public live URLs:
 
 ## 🛡️ Medical Disclaimer
 SmartMed is a medication reminder and adherence tracking software tool. The monographs contained in the educational library are compiled from verified public health resources (MedlinePlus, NHS UK, FDA) for general informational reference only. SmartMed does not dispense medical advice, diagnosis, or clinical therapy. Patients must always follow the instructions of their licensed physician.
+#   s m a r t m e d  
+ 
