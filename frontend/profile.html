@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - SmartMed Healthcare</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand text-decoration-none">
+          <i class="fa-solid fa-notes-medical text-primary fs-4"></i>
+          <span>Smart<strong>Med</strong></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Core</div>
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+        <a href="today.html" class="sidebar-link"><i class="fa-solid fa-calendar-day"></i> Today's Doses</a>
+        <a href="medicines.html" class="sidebar-link"><i class="fa-solid fa-pills"></i> My Medicines</a>
+        <a href="add-medicine.html" class="sidebar-link"><i class="fa-solid fa-plus-circle"></i> Add Medicine</a>
+
+        <div class="sidebar-section-title">Schedules & Alerts</div>
+        <a href="schedule.html" class="sidebar-link"><i class="fa-solid fa-calendar-days"></i> Schedule Manager</a>
+        <a href="upcoming.html" class="sidebar-link"><i class="fa-solid fa-clock"></i> Upcoming Alerts</a>
+        <a href="history.html" class="sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i> Dose History</a>
+        <a href="notifications.html" class="sidebar-link">
+          <i class="fa-solid fa-bell"></i> Notifications
+          <span class="badge bg-danger rounded-pill ms-auto notification-badge-count" style="display:none;">0</span>
+        </a>
+
+        <div class="sidebar-section-title">Medical Reference</div>
+        <a href="medicine-search.html" class="sidebar-link"><i class="fa-solid fa-book-medical"></i> Medicine Search</a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> Reports & Analytics</a>
+
+        <div class="sidebar-section-title">Preferences</div>
+        <a href="profile.html" class="sidebar-link active"><i class="fa-solid fa-user-circle"></i> Profile</a>
+        <a href="settings.html" class="sidebar-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2 overflow-hidden">
+          <div class="stat-icon primary current-user-initials rounded-circle" style="width:36px; height:36px; font-size:0.85rem;">U</div>
+          <div class="overflow-hidden" style="max-width: 130px;">
+            <div class="current-user-name fw-bold small text-truncate text-white">Patient</div>
+            <div class="current-user-email small text-truncate text-muted" style="font-size:0.75rem;">user@smartmed.com</div>
+          </div>
+        </div>
+        <button onclick="logoutUser()" class="btn btn-sm btn-outline-danger border-0 p-1" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <header class="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="mobile-nav-toggle"><i class="fa-solid fa-bars"></i></button>
+          <h5 class="mb-0 fw-bold">Patient Profile & Account</h5>
+        </div>
+        <div>
+          <button onclick="logoutUser()" class="btn btn-sm btn-outline-danger">
+            <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Sign Out
+          </button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="row g-4">
+          <!-- Left Column: User Card & Personal Info -->
+          <div class="col-lg-7">
+            <!-- Profile Identity Card -->
+            <div class="glass-card mb-4 p-4">
+              <div class="d-flex align-items-center gap-4 mb-4 pb-3 border-bottom">
+                <div class="stat-icon primary current-user-initials rounded-circle" style="width:72px; height:72px; font-size:1.75rem;">U</div>
+                <div>
+                  <h4 class="fw-bold mb-1 current-user-name">Patient Name</h4>
+                  <div class="text-muted small mb-2"><i class="fa-regular fa-envelope me-1"></i><span class="current-user-email">patient@example.com</span></div>
+                  <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Active Patient Account</span>
+                </div>
+              </div>
+
+              <!-- Profile Update Form -->
+              <h6 class="fw-bold mb-3"><i class="fa-regular fa-id-card text-primary me-2"></i>Personal Contact Information</h6>
+              <form id="profileUpdateForm" onsubmit="handleUpdateProfile(event)">
+                <div class="mb-3">
+                  <label class="form-label-smart" for="profileName">Full Name</label>
+                  <input type="text" id="profileName" class="form-control-smart" required>
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="profilePhone">Phone Number</label>
+                    <input type="tel" id="profilePhone" class="form-control-smart" placeholder="+1 (555) 000-0000">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="profileEmergency">Emergency Contact</label>
+                    <input type="text" id="profileEmergency" class="form-control-smart" placeholder="Contact Name & Number">
+                  </div>
+                </div>
+
+                <div class="text-end">
+                  <button type="submit" id="saveProfileBtn" class="btn btn-primary-smart">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Update Profile
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Password Change Form -->
+            <div class="solid-card p-4">
+              <h6 class="fw-bold mb-3"><i class="fa-solid fa-key text-primary me-2"></i>Change Security Password</h6>
+              <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+                <div class="mb-3">
+                  <label class="form-label-smart" for="oldPassword">Current Password</label>
+                  <input type="password" id="oldPassword" class="form-control-smart" required>
+                </div>
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" class="form-control-smart" minlength="6" required placeholder="Min 6 characters">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="confirmPassword">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-control-smart" minlength="6" required placeholder="Re-enter password">
+                  </div>
+                </div>
+                <div class="text-end">
+                  <button type="submit" id="changePwdBtn" class="btn btn-secondary-smart">
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right Column: Stored Prescriptions Gallery -->
+          <div class="col-lg-5">
+            <div class="solid-card p-4 h-100">
+              <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                <h6 class="fw-bold mb-0"><i class="fa-solid fa-file-prescription text-primary me-2"></i>Uploaded Prescriptions</h6>
+                <a href="add-medicine.html" class="small text-primary fw-semibold">+ Upload</a>
+              </div>
+
+              <div id="prescriptionsListContainer" class="d-flex flex-column gap-3">
+                <div class="text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary mb-2"></div>
+                  <div>Loading prescription records...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      loadProfileData();
+      loadPrescriptions();
+    });
+
+    async function loadProfileData() {
+      try {
+        const user = await SmartMedAPI.auth.me();
+        AuthStorage.setUser(user);
+        document.getElementById("profileName").value = user.full_name || "";
+        document.getElementById("profilePhone").value = user.phone || "";
+        document.getElementById("profileEmergency").value = user.emergency_contact || "";
+      } catch (e) {
+        showToast("Error loading profile: " + e.message, "error");
+      }
+    }
+
+    async function handleUpdateProfile(e) {
+      e.preventDefault();
+      const full_name = document.getElementById("profileName").value.trim();
+      const phone = document.getElementById("profilePhone").value.trim();
+      const emergency_contact = document.getElementById("profileEmergency").value.trim();
+
+      try {
+        const updated = await SmartMedAPI.users.updateProfile({ full_name, phone, emergency_contact });
+        AuthStorage.setUser(updated);
+        renderUserNavbar();
+        showToast("Profile details updated successfully!", "success");
+      } catch (err) {
+        showToast("Error updating profile: " + err.message, "error");
+      }
+    }
+
+    async function handleChangePassword(e) {
+      e.preventDefault();
+      const old_password = document.getElementById("oldPassword").value;
+      const new_password = document.getElementById("newPassword").value;
+      const confirm = document.getElementById("confirmPassword").value;
+
+      if (new_password !== confirm) {
+        showToast("New passwords do not match.", "warning");
+        return;
+      }
+
+      try {
+        await SmartMedAPI.users.changePassword(old_password, new_password);
+        showToast("Password updated successfully!", "success");
+        document.getElementById("changePasswordForm").reset();
+      } catch (err) {
+        showToast("Password update failed: " + err.message, "error");
+      }
+    }
+
+    async function loadPrescriptions() {
+      const container = document.getElementById("prescriptionsListContainer");
+      try {
+        const items = await SmartMedAPI.prescriptions.list();
+
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-4 text-muted small">
+              <i class="fa-regular fa-file-image fs-3 mb-2"></i>
+              <div>No prescription documents uploaded yet.</div>
+              <small>You can attach prescription scans when adding medications.</small>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = items.map(p => `
+          <div class="p-3 border rounded-3 bg-light-subtle d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3 overflow-hidden">
+              <div class="stat-icon primary" style="width:40px;height:40px;font-size:1.1rem;">
+                <i class="fa-solid ${p.file_type === 'PDF' ? 'fa-file-pdf text-danger' : 'fa-file-image text-primary'}"></i>
+              </div>
+              <div class="overflow-hidden">
+                <a href="${p.file_path}" target="_blank" class="fw-bold text-dark text-truncate d-block small" title="${p.file_name}">
+                  ${p.file_name}
+                </a>
+                <small class="text-muted d-block" style="font-size:0.75rem;">
+                  ${p.medicine_name ? 'Linked: ' + p.medicine_name : (p.doctor_name || 'Prescription scan')}
+                </small>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-1">
+              <a href="${p.file_path}" target="_blank" class="btn btn-sm btn-outline-primary" title="View Document">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+              <button class="btn btn-sm btn-link text-danger p-0 ms-2" onclick="deletePrescriptionDoc(${p.id})">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `).join("");
+
+      } catch (e) {
+        container.innerHTML = `<small class="text-muted">Error loading prescriptions.</small>`;
+      }
+    }
+
+    async function deletePrescriptionDoc(id) {
+      if (confirm("Delete this prescription scan?")) {
+        try {
+          await SmartMedAPI.prescriptions.delete(id);
+          showToast("Prescription file removed.", "info");
+          loadPrescriptions();
+        } catch (e) {
+          showToast("Failed to delete prescription: " + e.message, "error");
+        }
+      }
+    }
+  </script>
+</body>
+</html>

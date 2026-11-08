@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - SmartMed Healthcare</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand text-decoration-none">
+          <i class="fa-solid fa-notes-medical text-primary fs-4"></i>
+          <span>Smart<strong>Med</strong></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Core</div>
+        <a href="dashboard.html" class="sidebar-link active"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+        <a href="today.html" class="sidebar-link"><i class="fa-solid fa-calendar-day"></i> Today's Doses</a>
+        <a href="medicines.html" class="sidebar-link"><i class="fa-solid fa-pills"></i> My Medicines</a>
+        <a href="add-medicine.html" class="sidebar-link"><i class="fa-solid fa-plus-circle"></i> Add Medicine</a>
+
+        <div class="sidebar-section-title">Schedules & Alerts</div>
+        <a href="schedule.html" class="sidebar-link"><i class="fa-solid fa-calendar-days"></i> Schedule Manager</a>
+        <a href="upcoming.html" class="sidebar-link"><i class="fa-solid fa-clock"></i> Upcoming Alerts</a>
+        <a href="history.html" class="sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i> Dose History</a>
+        <a href="notifications.html" class="sidebar-link">
+          <i class="fa-solid fa-bell"></i> Notifications
+          <span class="badge bg-danger rounded-pill ms-auto notification-badge-count" style="display:none;">0</span>
+        </a>
+
+        <div class="sidebar-section-title">Medical Reference</div>
+        <a href="medicine-search.html" class="sidebar-link"><i class="fa-solid fa-book-medical"></i> Medicine Search</a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> Reports & Analytics</a>
+
+        <div class="sidebar-section-title">Preferences</div>
+        <a href="profile.html" class="sidebar-link"><i class="fa-solid fa-user-circle"></i> Profile</a>
+        <a href="settings.html" class="sidebar-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2 overflow-hidden">
+          <div class="stat-icon primary current-user-initials rounded-circle" style="width:36px; height:36px; font-size:0.85rem;">U</div>
+          <div class="overflow-hidden" style="max-width: 130px;">
+            <div class="current-user-name fw-bold small text-truncate text-white">Patient</div>
+            <div class="current-user-email small text-truncate text-muted" style="font-size:0.75rem;">user@smartmed.com</div>
+          </div>
+        </div>
+        <button onclick="logoutUser()" class="btn btn-sm btn-outline-danger border-0 p-1" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="mobile-nav-toggle"><i class="fa-solid fa-bars"></i></button>
+          <h5 class="mb-0 fw-bold">Patient Overview</h5>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+          <a href="add-medicine.html" class="btn btn-sm btn-primary-smart">
+            <i class="fa-solid fa-plus"></i> <span class="d-none d-sm-inline">Add Medicine</span>
+          </a>
+          <button class="theme-toggle-btn btn btn-sm btn-outline-secondary rounded-circle" style="width:38px;height:38px;">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="notifications.html" class="btn btn-sm btn-outline-secondary rounded-circle position-relative" style="width:38px;height:38px;">
+            <i class="fa-solid fa-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle notification-badge-count" style="display:none;"></span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Page Body -->
+      <div class="page-body">
+        <!-- Notification Permission Request Banner -->
+        <div id="notifPermissionBanner" class="alert alert-info d-flex align-items-center justify-content-between p-3 rounded-3 mb-4 d-none">
+          <div class="d-flex align-items-center gap-3">
+            <i class="fa-solid fa-bell text-primary fs-4"></i>
+            <div>
+              <strong>Enable Browser Reminders:</strong> Receive audible alerts and desktop notifications when your medication is due.
+            </div>
+          </div>
+          <button onclick="requestBrowserNotifications()" class="btn btn-sm btn-primary-smart px-3">
+            Enable Alerts
+          </button>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon primary"><i class="fa-solid fa-pills"></i></div>
+              <div>
+                <div class="stat-value" id="statTotalMeds">0</div>
+                <div class="stat-label">Total Medicines (<span id="statActiveMeds">0</span> Active)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon warning"><i class="fa-solid fa-calendar-check"></i></div>
+              <div>
+                <div class="stat-value" id="statTodayTotal">0</div>
+                <div class="stat-label">Scheduled Today (<span id="statTodayPending">0</span> Pending)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon success"><i class="fa-solid fa-chart-pie"></i></div>
+              <div>
+                <div class="stat-value" id="statWeeklyAdherence">0%</div>
+                <div class="stat-label">Weekly Adherence Rate</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon secondary"><i class="fa-solid fa-fire text-danger"></i></div>
+              <div>
+                <div class="stat-value" id="statCurrentStreak">0 Days</div>
+                <div class="stat-label">Active Adherence Streak</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Middle Section: Today's Schedule + Upcoming Doses -->
+        <div class="row g-4 mb-4">
+          <!-- Today's Schedule Actions -->
+          <div class="col-lg-8">
+            <div class="glass-card h-100">
+              <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-clock-rotate-left text-primary fs-5"></i>
+                  <h6 class="mb-0 fw-bold">Today's Medication Doses</h6>
+                </div>
+                <a href="today.html" class="small text-primary fw-semibold">View All <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+
+              <div id="todayDosesList" class="d-flex flex-column gap-3">
+                <div class="text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+                  <div>Loading today's doses...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Upcoming Next Doses & Alerts -->
+          <div class="col-lg-4">
+            <div class="solid-card h-100">
+              <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                <h6 class="mb-0 fw-bold"><i class="fa-solid fa-hourglass-start text-warning me-1"></i> Due Next</h6>
+                <span class="badge bg-light text-dark border">Live</span>
+              </div>
+
+              <div id="upcomingDueList" class="d-flex flex-column gap-3">
+                <!-- Dynamically populated -->
+              </div>
+
+              <div class="mt-4 pt-3 border-top">
+                <a href="schedule.html" class="btn btn-sm btn-secondary-smart w-100 justify-content-center">
+                  <i class="fa-solid fa-calendar-plus me-1"></i> Manage Full Schedule
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Section: Adherence Charts & Category Breakdown -->
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="glass-card">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="mb-0 fw-bold"><i class="fa-solid fa-chart-area text-primary me-2"></i> 7-Day Adherence Trend</h6>
+                <span class="badge bg-primary-subtle text-primary">Daily Record</span>
+              </div>
+              <div style="height: 250px;">
+                <canvas id="adherenceWeeklyChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="glass-card">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="mb-0 fw-bold"><i class="fa-solid fa-pie-chart text-secondary me-2"></i> Medicine Categories</h6>
+              </div>
+              <div style="height: 250px; display:flex; align-items:center; justify-content:center;">
+                <canvas id="categoryDistributionChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/notifications.js"></script>
+  <script>
+    let weeklyChartInstance = null;
+    let categoryChartInstance = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      checkNotificationBanner();
+      loadDashboardData();
+    });
+
+    function checkNotificationBanner() {
+      if ("Notification" in window && Notification.permission === "default") {
+        document.getElementById("notifPermissionBanner").classList.remove("d-none");
+      }
+    }
+
+    async function requestBrowserNotifications() {
+      const granted = await SmartMedNotifier.requestPermission();
+      if (granted) {
+        document.getElementById("notifPermissionBanner").classList.add("d-none");
+      }
+    }
+
+    async function loadDashboardData() {
+      try {
+        const data = await SmartMedAPI.reports.dashboardSummary();
+
+        // Update stat cards
+        document.getElementById("statTotalMeds").textContent = data.total_medicines;
+        document.getElementById("statActiveMeds").textContent = data.active_medicines;
+        document.getElementById("statTodayTotal").textContent = data.today_total;
+        document.getElementById("statTodayPending").textContent = data.today_pending;
+        document.getElementById("statWeeklyAdherence").textContent = `${data.weekly_adherence_rate}%`;
+        document.getElementById("statCurrentStreak").textContent = `${data.current_streak} Day${data.current_streak === 1 ? '' : 's'}`;
+
+        // Render Today's doses
+        const todayContainer = document.getElementById("todayDosesList");
+        const todayLogs = await SmartMedAPI.schedules.today();
+
+        if (todayLogs.length === 0) {
+          todayContainer.innerHTML = `
+            <div class="text-center py-4 text-muted">
+              <i class="fa-regular fa-calendar-check fs-2 mb-2 text-primary"></i>
+              <p class="mb-1 fw-semibold">No medicines scheduled for today.</p>
+              <small>Click "Add Medicine" to prescribe your first medication schedule.</small>
+            </div>
+          `;
+        } else {
+          todayContainer.innerHTML = todayLogs.map(dose => {
+            const timeStr = new Date(dose.scheduled_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            let badgeClass = "badge-pending";
+            let badgeIcon = "fa-hourglass-half";
+            if (dose.status === "taken") { badgeClass = "badge-taken"; badgeIcon = "fa-check"; }
+            else if (dose.status === "missed") { badgeClass = "badge-missed"; badgeIcon = "fa-xmark"; }
+            else if (dose.status === "skipped") { badgeClass = "badge-skipped"; badgeIcon = "fa-forward"; }
+
+            return `
+              <div class="p-3 solid-card d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="stat-icon ${dose.status === 'taken' ? 'success' : 'primary'}" style="width:44px; height:44px;">
+                    <i class="fa-solid fa-pills"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold">${dose.medicine_name} <span class="text-muted small fw-normal">(${dose.medicine_dosage || ''} ${dose.medicine_form || ''})</span></h6>
+                    <small class="text-muted"><i class="fa-regular fa-clock me-1"></i>${timeStr} &bull; ${dose.instructions || 'Standard dose'}</small>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge-status ${badgeClass}"><i class="fa-solid ${badgeIcon}"></i> ${dose.status}</span>
+                  ${dose.status === 'pending' || dose.status === 'missed' ? `
+                    <button class="btn-action-take" onclick="markDoseStatus(${dose.id}, 'taken')">
+                      <i class="fa-solid fa-check"></i> Take
+                    </button>
+                    <button class="btn-action-skip" onclick="markDoseStatus(${dose.id}, 'skipped')">
+                      Skip
+                    </button>
+                    <button class="btn-action-snooze" onclick="snoozeDose(${dose.id})">
+                      <i class="fa-solid fa-bell"></i> 15m
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join("");
+        }
+
+        // Render Due Next column
+        const upcomingContainer = document.getElementById("upcomingDueList");
+        if (data.upcoming_today.length === 0) {
+          upcomingContainer.innerHTML = `
+            <div class="text-center py-4 text-muted small">
+              <i class="fa-solid fa-circle-check text-success fs-3 mb-2"></i>
+              <div>All pending doses for today have been completed or none scheduled!</div>
+            </div>
+          `;
+        } else {
+          upcomingContainer.innerHTML = data.upcoming_today.map(item => `
+            <div class="p-2 border rounded d-flex align-items-center justify-content-between bg-light-subtle">
+              <div>
+                <strong class="d-block text-truncate" style="max-width:140px;">${item.medicine_name}</strong>
+                <small class="text-muted">${item.dosage} &bull; ${item.scheduled_time}</small>
+              </div>
+              <button class="btn-action-take btn-sm" onclick="markDoseStatus(${item.id}, 'taken')">
+                <i class="fa-solid fa-check"></i> Take
+              </button>
+            </div>
+          `).join("");
+        }
+
+        // Render Charts
+        renderWeeklyChart(data.weekly_chart);
+        renderCategoryChart(data.categories);
+
+      } catch (err) {
+        showToast("Error loading dashboard data: " + err.message, "error");
+      }
+    }
+
+    async function markDoseStatus(id, status) {
+      try {
+        await SmartMedAPI.logs.updateStatus(id, status);
+        showToast(`Dose marked as ${status}!`, "success");
+        SmartMedNotifier.playReminderSound();
+        loadDashboardData();
+      } catch (e) {
+        showToast("Failed to update status: " + e.message, "error");
+      }
+    }
+
+    async function snoozeDose(id) {
+      try {
+        await SmartMedAPI.logs.snooze(id, 15);
+        showToast("Reminder snoozed for 15 minutes.", "info");
+        loadDashboardData();
+      } catch (e) {
+        showToast("Failed to snooze: " + e.message, "error");
+      }
+    }
+
+    function renderWeeklyChart(dailyHistory) {
+      const ctx = document.getElementById("adherenceWeeklyChart").getContext("2d");
+      if (weeklyChartInstance) weeklyChartInstance.destroy();
+
+      const labels = dailyHistory.map(d => {
+        const parts = d.date.split("-");
+        return `${parts[1]}/${parts[2]}`;
+      });
+      const takenData = dailyHistory.map(d => d.taken);
+      const missedData = dailyHistory.map(d => d.missed);
+
+      weeklyChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Taken",
+              data: takenData,
+              backgroundColor: "rgba(16, 185, 129, 0.75)",
+              borderRadius: 6
+            },
+            {
+              label: "Missed",
+              data: missedData,
+              backgroundColor: "rgba(239, 68, 68, 0.75)",
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, ticks: { precision: 0 } },
+            x: { grid: { display: false } }
+          },
+          plugins: {
+            legend: { position: "top" }
+          }
+        }
+      });
+    }
+
+    function renderCategoryChart(categories) {
+      const ctx = document.getElementById("categoryDistributionChart").getContext("2d");
+      if (categoryChartInstance) categoryChartInstance.destroy();
+
+      if (!categories || categories.length === 0) {
+        categories = [{ category: "General", count: 1 }];
+      }
+
+      const labels = categories.map(c => c.category);
+      const counts = categories.map(c => c.count);
+
+      categoryChartInstance = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: labels,
+          datasets: [{
+            data: counts,
+            backgroundColor: [
+              "#0284c7",
+              "#6366f1",
+              "#10b981",
+              "#f59e0b",
+              "#ec4899",
+              "#8b5cf6"
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12 } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

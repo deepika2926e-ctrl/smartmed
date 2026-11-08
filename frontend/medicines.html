@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Medicines - SmartMed Healthcare</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand text-decoration-none">
+          <i class="fa-solid fa-notes-medical text-primary fs-4"></i>
+          <span>Smart<strong>Med</strong></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Core</div>
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+        <a href="today.html" class="sidebar-link"><i class="fa-solid fa-calendar-day"></i> Today's Doses</a>
+        <a href="medicines.html" class="sidebar-link active"><i class="fa-solid fa-pills"></i> My Medicines</a>
+        <a href="add-medicine.html" class="sidebar-link"><i class="fa-solid fa-plus-circle"></i> Add Medicine</a>
+
+        <div class="sidebar-section-title">Schedules & Alerts</div>
+        <a href="schedule.html" class="sidebar-link"><i class="fa-solid fa-calendar-days"></i> Schedule Manager</a>
+        <a href="upcoming.html" class="sidebar-link"><i class="fa-solid fa-clock"></i> Upcoming Alerts</a>
+        <a href="history.html" class="sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i> Dose History</a>
+        <a href="notifications.html" class="sidebar-link">
+          <i class="fa-solid fa-bell"></i> Notifications
+          <span class="badge bg-danger rounded-pill ms-auto notification-badge-count" style="display:none;">0</span>
+        </a>
+
+        <div class="sidebar-section-title">Medical Reference</div>
+        <a href="medicine-search.html" class="sidebar-link"><i class="fa-solid fa-book-medical"></i> Medicine Search</a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> Reports & Analytics</a>
+
+        <div class="sidebar-section-title">Preferences</div>
+        <a href="profile.html" class="sidebar-link"><i class="fa-solid fa-user-circle"></i> Profile</a>
+        <a href="settings.html" class="sidebar-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2 overflow-hidden">
+          <div class="stat-icon primary current-user-initials rounded-circle" style="width:36px; height:36px; font-size:0.85rem;">U</div>
+          <div class="overflow-hidden" style="max-width: 130px;">
+            <div class="current-user-name fw-bold small text-truncate text-white">Patient</div>
+            <div class="current-user-email small text-truncate text-muted" style="font-size:0.75rem;">user@smartmed.com</div>
+          </div>
+        </div>
+        <button onclick="logoutUser()" class="btn btn-sm btn-outline-danger border-0 p-1" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <header class="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="mobile-nav-toggle"><i class="fa-solid fa-bars"></i></button>
+          <h5 class="mb-0 fw-bold">My Prescribed Medicines</h5>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <a href="add-medicine.html" class="btn btn-sm btn-primary-smart">
+            <i class="fa-solid fa-plus me-1"></i> Add Medicine
+          </a>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Filter and Search Header -->
+        <div class="glass-card mb-4 p-3">
+          <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-md-5">
+              <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="medSearchInput" class="form-control border-start-0" placeholder="Filter by medicine, generic name, or category..." oninput="handleSearchFilter(this.value)">
+              </div>
+            </div>
+
+            <div class="col-md-7 d-flex justify-content-md-end gap-2 flex-wrap">
+              <button class="btn btn-sm filter-pill active btn-primary" onclick="setFilterStatus('all', this)">All</button>
+              <button class="btn btn-sm filter-pill btn-outline-secondary" onclick="setFilterStatus('active', this)">Active</button>
+              <button class="btn btn-sm filter-pill btn-outline-secondary" onclick="setFilterStatus('completed', this)">Completed</button>
+              <button class="btn btn-sm filter-pill btn-outline-secondary" onclick="setFilterStatus('paused', this)">Paused</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medicines List Container -->
+        <div id="medicinesContainer" class="row g-3">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <div class="text-muted mt-2">Loading your medicines...</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Medicine Modal -->
+  <div class="modal fade" id="editMedModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="editModalTitle">Edit Medication</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="editMedForm" onsubmit="handleSaveEdit(event)">
+          <div class="modal-body">
+            <input type="hidden" id="editMedId">
+            <div class="mb-3">
+              <label class="form-label-smart">Medicine Name</label>
+              <input type="text" id="editMedName" class="form-control-smart" required>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label-smart">Dosage</label>
+                <input type="text" id="editMedDosage" class="form-control-smart" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label-smart">Form</label>
+                <select id="editMedFormSelect" class="form-control-smart">
+                  <option value="Tablet">Tablet</option>
+                  <option value="Capsule">Capsule</option>
+                  <option value="Syrup">Syrup</option>
+                  <option value="Injection">Injection</option>
+                  <option value="Inhaler">Inhaler</option>
+                  <option value="Drops">Drops</option>
+                  <option value="Topical">Topical</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label-smart">Instructions</label>
+              <input type="text" id="editMedInstructions" class="form-control-smart">
+            </div>
+            <div class="mb-3">
+              <label class="form-label-smart">Status</label>
+              <select id="editMedStatus" class="form-control-smart">
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="paused">Paused</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary-smart" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-smart">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    let allUserMedicines = [];
+    let currentStatusFilter = "all";
+    let currentSearchTerm = "";
+    let editModal = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      editModal = new bootstrap.Modal(document.getElementById("editMedModal"));
+      loadUserMedicines();
+    });
+
+    async function loadUserMedicines() {
+      try {
+        allUserMedicines = await SmartMedAPI.medicines.list();
+        renderMedicines();
+      } catch (e) {
+        showToast("Error loading medicines: " + e.message, "error");
+      }
+    }
+
+    function setFilterStatus(status, btn) {
+      currentStatusFilter = status;
+      document.querySelectorAll(".filter-pill").forEach(b => {
+        b.className = "btn btn-sm filter-pill btn-outline-secondary";
+      });
+      btn.className = "btn btn-sm filter-pill btn-primary";
+      renderMedicines();
+    }
+
+    function handleSearchFilter(term) {
+      currentSearchTerm = term.toLowerCase().trim();
+      renderMedicines();
+    }
+
+    function renderMedicines() {
+      const container = document.getElementById("medicinesContainer");
+      let filtered = allUserMedicines;
+
+      if (currentStatusFilter !== "all") {
+        filtered = filtered.filter(m => m.status === currentStatusFilter);
+      }
+
+      if (currentSearchTerm) {
+        filtered = filtered.filter(m => 
+          (m.name && m.name.toLowerCase().includes(currentSearchTerm)) ||
+          (m.generic_name && m.generic_name.toLowerCase().includes(currentSearchTerm)) ||
+          (m.category && m.category.toLowerCase().includes(currentSearchTerm))
+        );
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <div class="stat-icon primary mx-auto mb-3" style="width:64px;height:64px;font-size:1.75rem;">
+              <i class="fa-solid fa-pills"></i>
+            </div>
+            <h5 class="fw-bold">No medicines found</h5>
+            <p class="text-muted small">Try adjusting your filters or click below to add a new medication.</p>
+            <a href="add-medicine.html" class="btn btn-primary-smart mt-2">
+              <i class="fa-solid fa-plus me-1"></i> Add Medication
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(m => {
+        let statusBadge = m.status === "active" 
+          ? '<span class="badge-status badge-taken"><i class="fa-solid fa-circle-check"></i> Active</span>'
+          : (m.status === "completed" 
+            ? '<span class="badge-status badge-skipped">Completed</span>' 
+            : '<span class="badge-status badge-missed">Paused</span>');
+
+        return `
+          <div class="col-md-6 col-xl-4">
+            <div class="solid-card h-100 p-4 d-flex flex-column justify-content-between">
+              <div>
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <span class="badge-status badge-category">${m.category || 'General'}</span>
+                  ${statusBadge}
+                </div>
+                <h5 class="fw-bold mb-1 text-truncate">${m.name}</h5>
+                <p class="text-muted small mb-2">${m.generic_name ? 'Generic: ' + m.generic_name : 'Prescription Item'}</p>
+
+                <div class="p-3 bg-light-subtle rounded-3 mb-3 small">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Dosage:</span>
+                    <strong>${m.dosage} (${m.form})</strong>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Frequency:</span>
+                    <strong>${m.frequency}</strong>
+                  </div>
+                  ${m.doctor_name ? `
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-muted">Prescriber:</span>
+                      <span>${m.doctor_name}</span>
+                    </div>
+                  ` : ''}
+                  ${m.instructions ? `
+                    <div class="mt-2 pt-2 border-top text-muted">
+                      <i class="fa-solid fa-circle-info me-1 text-primary"></i> ${m.instructions}
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                <a href="schedule.html" class="btn btn-sm btn-outline-primary" title="Manage Schedule">
+                  <i class="fa-solid fa-calendar-days"></i> Schedule
+                </a>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-secondary-smart" onclick="openEditModal(${m.id})">
+                    <i class="fa-solid fa-pen"></i> Edit
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteMedicine(${m.id}, '${m.name}')">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openEditModal(id) {
+      const med = allUserMedicines.find(m => m.id === id);
+      if (!med) return;
+      document.getElementById("editMedId").value = med.id;
+      document.getElementById("editMedName").value = med.name;
+      document.getElementById("editMedDosage").value = med.dosage;
+      document.getElementById("editMedFormSelect").value = med.form || "Tablet";
+      document.getElementById("editMedInstructions").value = med.instructions || "";
+      document.getElementById("editMedStatus").value = med.status || "active";
+      document.getElementById("editModalTitle").textContent = `Edit '${med.name}'`;
+      editModal.show();
+    }
+
+    async function handleSaveEdit(e) {
+      e.preventDefault();
+      const id = document.getElementById("editMedId").value;
+      const payload = {
+        name: document.getElementById("editMedName").value.trim(),
+        dosage: document.getElementById("editMedDosage").value.trim(),
+        form: document.getElementById("editMedFormSelect").value,
+        instructions: document.getElementById("editMedInstructions").value.trim(),
+        status: document.getElementById("editMedStatus").value
+      };
+
+      try {
+        await SmartMedAPI.medicines.update(id, payload);
+        showToast("Medication updated successfully!", "success");
+        editModal.hide();
+        loadUserMedicines();
+      } catch (err) {
+        showToast("Error updating medicine: " + err.message, "error");
+      }
+    }
+
+    async function deleteMedicine(id, name) {
+      if (confirm(`Are you sure you want to delete '${name}'? This will also remove its associated schedules and dose records.`)) {
+        try {
+          await SmartMedAPI.medicines.delete(id);
+          showToast(`'${name}' deleted successfully.`, "info");
+          loadUserMedicines();
+        } catch (err) {
+          showToast("Failed to delete medicine: " + err.message, "error");
+        }
+      }
+    }
+  </script>
+</body>
+</html>

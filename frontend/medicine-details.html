@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medicine Information - SmartMed Healthcare Guide</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="public-navbar">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a href="index.html" class="navbar-brand-smart">
+        <i class="fa-solid fa-notes-medical"></i>
+        <span>Smart<strong style="color:var(--navy);">Med</strong></span>
+      </a>
+
+      <div class="d-flex align-items-center gap-3">
+        <a href="medicine-search.html" class="btn btn-sm btn-outline-secondary">
+          <i class="fa-solid fa-arrow-left me-1"></i> Back to Search
+        </a>
+        <button class="theme-toggle-btn btn btn-sm btn-outline-secondary rounded-circle" style="width:38px;height:38px;">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="dashboard.html" class="btn btn-sm btn-primary-smart" id="detailsDashboardBtn">
+          Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-5">
+    <div id="detailsLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <div class="text-muted mt-2">Loading verified medicine information...</div>
+    </div>
+
+    <div id="detailsContent" class="d-none">
+      <!-- Header Banner Card -->
+      <div class="glass-card mb-4 p-4 p-md-5">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+          <span class="badge-status badge-category fs-6 px-3 py-1" id="medCategoryBadge">Category</span>
+          <a href="#" id="addToPrescriptionBtn" class="btn btn-primary-smart">
+            <i class="fa-solid fa-plus me-1"></i> Add to My Prescriptions
+          </a>
+        </div>
+        <h1 class="display-6 fw-bold mb-1" id="medNameTitle">Medicine Name</h1>
+        <div class="lead text-muted mb-3">
+          Generic Name: <strong class="text-dark" id="medGenericSubtitle">Generic</strong> &bull;
+          Brands: <span id="medBrandNames">Brands</span>
+        </div>
+        <p class="mb-0 text-muted" id="medDescription" style="font-size:1.05rem; line-height:1.6;"></p>
+      </div>
+
+      <!-- Main Two-Column Monograph Grid -->
+      <div class="row g-4">
+        <!-- Left Column: Indications, Mechanism, Formulations -->
+        <div class="col-lg-8">
+          <!-- Common Uses -->
+          <div class="solid-card mb-4 p-4">
+            <h5 class="fw-bold mb-3 text-primary d-flex align-items-center gap-2">
+              <i class="fa-solid fa-stethoscope"></i> Common Uses & Indications
+            </h5>
+            <p id="medCommonUses" style="line-height:1.6;"></p>
+          </div>
+
+          <!-- Mechanism of Action -->
+          <div class="solid-card mb-4 p-4">
+            <h5 class="fw-bold mb-3 text-primary d-flex align-items-center gap-2">
+              <i class="fa-solid fa-dna"></i> How the Medicine Works (Mechanism of Action)
+            </h5>
+            <p id="medMechanism" style="line-height:1.6;"></p>
+          </div>
+
+          <!-- Side Effects Grid -->
+          <div class="solid-card mb-4 p-4">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-warning"></i> Side Effects & Warnings
+            </h5>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="p-3 rounded-3 bg-light-subtle h-100">
+                  <h6 class="fw-bold text-muted mb-2"><i class="fa-solid fa-circle-dot me-1 text-info"></i> Common Side Effects</h6>
+                  <p class="small mb-0" id="medCommonSideEffects" style="line-height:1.5;"></p>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="p-3 rounded-3 bg-danger-subtle h-100 border border-danger-subtle">
+                  <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-1"></i> Serious Side Effects & Red Flags</h6>
+                  <p class="small mb-0 text-danger" id="medSeriousSideEffects" style="line-height:1.5;"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Precautions & Interactions -->
+          <div class="solid-card mb-4 p-4">
+            <h5 class="fw-bold mb-3 text-primary d-flex align-items-center gap-2">
+              <i class="fa-solid fa-shield-halved"></i> Precautions & Drug Interactions
+            </h5>
+
+            <div class="mb-3">
+              <h6 class="fw-bold small text-muted text-uppercase">Patient Precautions:</h6>
+              <p id="medPrecautions" style="line-height:1.6;"></p>
+            </div>
+
+            <div class="mb-0">
+              <h6 class="fw-bold small text-muted text-uppercase">Potential Drug Interactions:</h6>
+              <p id="medInteractions" class="mb-0" style="line-height:1.6;"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Formulations, Storage, Usage, Sources -->
+        <div class="col-lg-4">
+          <!-- Formulation & Strengths -->
+          <div class="solid-card mb-4 p-4">
+            <h6 class="fw-bold text-primary mb-2"><i class="fa-solid fa-tablets me-1"></i> Available Forms & Strengths</h6>
+            <p class="small text-muted mb-0" id="medForms"></p>
+          </div>
+
+          <!-- General Usage & Administration -->
+          <div class="solid-card mb-4 p-4">
+            <h6 class="fw-bold text-primary mb-2"><i class="fa-solid fa-calendar-check me-1"></i> Usage & Administration</h6>
+            <p class="small text-muted mb-0" id="medUsageInfo"></p>
+          </div>
+
+          <!-- Storage Instructions -->
+          <div class="solid-card mb-4 p-4">
+            <h6 class="fw-bold text-primary mb-2"><i class="fa-solid fa-box-archive me-1"></i> Storage Guidelines</h6>
+            <p class="small text-muted mb-0" id="medStorage"></p>
+          </div>
+
+          <!-- Reference Sources -->
+          <div class="solid-card mb-4 p-4 bg-light-subtle">
+            <h6 class="fw-bold mb-2"><i class="fa-solid fa-book-bookmark me-1 text-secondary"></i> Trustworthy Sourced Citations</h6>
+            <p class="small text-muted mb-0" id="medReferences"></p>
+          </div>
+
+          <!-- Related Medicines in Category -->
+          <div class="solid-card p-4">
+            <h6 class="fw-bold mb-3"><i class="fa-solid fa-layer-group me-1 text-primary"></i> Related in this Category</h6>
+            <div id="relatedMedsList" class="d-flex flex-column gap-2">
+              <small class="text-muted">Loading related items...</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prominent Medical Educational Disclaimer -->
+      <div class="medical-disclaimer-banner mt-4">
+        <i class="fa-solid fa-triangle-exclamation fs-3 text-warning"></i>
+        <div>
+          <strong class="d-block mb-1">Educational Notice & Medical Disclaimer:</strong>
+          <span id="medDisclaimerText"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const medId = urlParams.get("id");
+      if (!medId) {
+        showToast("No medicine specified. Redirecting to search.", "warning");
+        setTimeout(() => window.location.href = "medicine-search.html", 1000);
+        return;
+      }
+      loadMedicineDetails(medId);
+    });
+
+    async function loadMedicineDetails(id) {
+      try {
+        const med = await SmartMedAPI.medicineInfo.get(id);
+
+        document.getElementById("medCategoryBadge").textContent = med.category;
+        document.getElementById("medNameTitle").textContent = med.name;
+        document.getElementById("medGenericSubtitle").textContent = med.generic_name;
+        document.getElementById("medBrandNames").textContent = med.brand_names || "N/A";
+        document.getElementById("medDescription").textContent = med.description;
+
+        document.getElementById("medCommonUses").textContent = med.common_uses;
+        document.getElementById("medMechanism").textContent = med.mechanism_of_action;
+        document.getElementById("medCommonSideEffects").textContent = med.common_side_effects;
+        document.getElementById("medSeriousSideEffects").textContent = med.serious_side_effects;
+        document.getElementById("medPrecautions").textContent = med.precautions;
+        document.getElementById("medInteractions").textContent = med.drug_interactions;
+
+        document.getElementById("medForms").textContent = med.available_forms;
+        document.getElementById("medUsageInfo").textContent = med.general_usage_info;
+        document.getElementById("medStorage").textContent = med.storage_instructions;
+        document.getElementById("medReferences").textContent = med.reference_sources;
+        document.getElementById("medDisclaimerText").textContent = med.disclaimer;
+
+        // Configure "Add to My Prescriptions" button
+        document.getElementById("addToPrescriptionBtn").href = `add-medicine.html?name=${encodeURIComponent(med.name)}&cat=${encodeURIComponent(med.category)}`;
+
+        // Show content
+        document.getElementById("detailsLoading").classList.add("d-none");
+        document.getElementById("detailsContent").classList.remove("d-none");
+
+        // Load related medicines
+        loadRelatedMedicines(id);
+
+      } catch (err) {
+        document.getElementById("detailsLoading").innerHTML = `
+          <div class="alert alert-danger">
+            <strong>Error:</strong> Failed to load medicine information. ${err.message}
+          </div>
+          <a href="medicine-search.html" class="btn btn-secondary-smart mt-3">Return to Search</a>
+        `;
+      }
+    }
+
+    async function loadRelatedMedicines(id) {
+      const container = document.getElementById("relatedMedsList");
+      try {
+        const related = await SmartMedAPI.medicineInfo.related(id);
+        if (related.length === 0) {
+          container.innerHTML = `<small class="text-muted">No other medications currently listed in this category.</small>`;
+          return;
+        }
+        container.innerHTML = related.map(r => `
+          <a href="medicine-details.html?id=${r.id}" class="p-2 border rounded text-decoration-none d-flex justify-content-between align-items-center bg-light-subtle">
+            <div>
+              <div class="fw-semibold text-dark small">${r.name}</div>
+              <small class="text-muted" style="font-size:0.75rem;">${r.generic_name}</small>
+            </div>
+            <i class="fa-solid fa-chevron-right text-muted small"></i>
+          </a>
+        `).join("");
+      } catch (e) {
+        container.innerHTML = `<small class="text-muted">Unable to load related items.</small>`;
+      }
+    }
+  </script>
+</body>
+</html>

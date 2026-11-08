@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - SmartMed Healthcare</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand text-decoration-none">
+          <i class="fa-solid fa-notes-medical text-primary fs-4"></i>
+          <span>Smart<strong>Med</strong></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Core</div>
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+        <a href="today.html" class="sidebar-link"><i class="fa-solid fa-calendar-day"></i> Today's Doses</a>
+        <a href="medicines.html" class="sidebar-link"><i class="fa-solid fa-pills"></i> My Medicines</a>
+        <a href="add-medicine.html" class="sidebar-link"><i class="fa-solid fa-plus-circle"></i> Add Medicine</a>
+
+        <div class="sidebar-section-title">Schedules & Alerts</div>
+        <a href="schedule.html" class="sidebar-link"><i class="fa-solid fa-calendar-days"></i> Schedule Manager</a>
+        <a href="upcoming.html" class="sidebar-link"><i class="fa-solid fa-clock"></i> Upcoming Alerts</a>
+        <a href="history.html" class="sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i> Dose History</a>
+        <a href="notifications.html" class="sidebar-link">
+          <i class="fa-solid fa-bell"></i> Notifications
+          <span class="badge bg-danger rounded-pill ms-auto notification-badge-count" style="display:none;">0</span>
+        </a>
+
+        <div class="sidebar-section-title">Medical Reference</div>
+        <a href="medicine-search.html" class="sidebar-link"><i class="fa-solid fa-book-medical"></i> Medicine Search</a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> Reports & Analytics</a>
+
+        <div class="sidebar-section-title">Preferences</div>
+        <a href="profile.html" class="sidebar-link"><i class="fa-solid fa-user-circle"></i> Profile</a>
+        <a href="settings.html" class="sidebar-link active"><i class="fa-solid fa-sliders"></i> Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2 overflow-hidden">
+          <div class="stat-icon primary current-user-initials rounded-circle" style="width:36px; height:36px; font-size:0.85rem;">U</div>
+          <div class="overflow-hidden" style="max-width: 130px;">
+            <div class="current-user-name fw-bold small text-truncate text-white">Patient</div>
+            <div class="current-user-email small text-truncate text-muted" style="font-size:0.75rem;">user@smartmed.com</div>
+          </div>
+        </div>
+        <button onclick="logoutUser()" class="btn btn-sm btn-outline-danger border-0 p-1" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <header class="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="mobile-nav-toggle"><i class="fa-solid fa-bars"></i></button>
+          <h5 class="mb-0 fw-bold">System Preferences & Settings</h5>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <!-- Notification Settings Card -->
+            <div class="glass-card mb-4 p-4">
+              <h5 class="fw-bold mb-3 pb-2 border-bottom">
+                <i class="fa-solid fa-bell text-primary me-2"></i>Reminder & Notification Preferences
+              </h5>
+
+              <form id="settingsForm" onsubmit="handleSaveSettings(event)">
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                  <div>
+                    <h6 class="mb-0 fw-bold">Browser Push Notifications</h6>
+                    <small class="text-muted">Receive pop-up reminders on your desktop or mobile screen.</small>
+                  </div>
+                  <div class="form-check form-switch fs-5">
+                    <input class="form-check-input" type="checkbox" id="setBrowserNotifs" checked>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                  <div>
+                    <h6 class="mb-0 fw-bold">Audio Chime Alerts</h6>
+                    <small class="text-muted">Play a pleasant synthesized medical chime when a dose is due.</small>
+                  </div>
+                  <div class="form-check form-switch fs-5">
+                    <input class="form-check-input" type="checkbox" id="setSoundAlerts" checked>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                  <div>
+                    <h6 class="mb-0 fw-bold">Advance Reminder Notice</h6>
+                    <small class="text-muted">Notify me in advance before the exact scheduled medication time.</small>
+                  </div>
+                  <div style="width: 140px;">
+                    <select id="setAdvanceMinutes" class="form-control-smart py-1 small">
+                      <option value="0">At time of dose</option>
+                      <option value="5">5 mins before</option>
+                      <option value="10">10 mins before</option>
+                      <option value="15">15 mins before</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Theme Selection -->
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                  <div>
+                    <h6 class="mb-0 fw-bold">Theme Appearance</h6>
+                    <small class="text-muted">Switch between crisp light mode and high-contrast dark mode.</small>
+                  </div>
+                  <div style="width: 140px;">
+                    <select id="setThemeSelect" class="form-control-smart py-1 small" onchange="previewTheme(this.value)">
+                      <option value="light">Light Mode</option>
+                      <option value="dark">Dark Mode</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Timezone Selection -->
+                <div class="d-flex align-items-center justify-content-between py-2 mb-4">
+                  <div>
+                    <h6 class="mb-0 fw-bold">Local Timezone</h6>
+                    <small class="text-muted">Ensures reminder calculations match your regional clock.</small>
+                  </div>
+                  <div style="width: 170px;">
+                    <select id="setTimezone" class="form-control-smart py-1 small">
+                      <option value="UTC">UTC (Universal)</option>
+                      <option value="America/New_York">Eastern Time (US)</option>
+                      <option value="America/Chicago">Central Time (US)</option>
+                      <option value="America/Los_Angeles">Pacific Time (US)</option>
+                      <option value="Europe/London">London (GMT/BST)</option>
+                      <option value="Europe/Paris">Central European Time</option>
+                      <option value="Asia/Kolkata">India Standard Time</option>
+                      <option value="Asia/Tokyo">Japan Standard Time</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="text-end">
+                  <button type="submit" id="saveSettingsBtn" class="btn btn-primary-smart px-4">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Save Preferences
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Server Connection Settings (Helpful for Render Deployment) -->
+            <div class="solid-card p-4">
+              <h6 class="fw-bold mb-2"><i class="fa-solid fa-server text-secondary me-2"></i>Backend API Connection</h6>
+              <p class="text-muted small mb-3">
+                Current API Endpoint: <code id="currentApiDisplay">http://localhost:8000</code>. You can configure a custom Render URL here if hosting the frontend statically.
+              </p>
+
+              <div class="input-group">
+                <input type="url" id="customApiUrlInput" class="form-control-smart" placeholder="https://your-smartmed-backend.onrender.com">
+                <button class="btn btn-secondary-smart" onclick="saveCustomApiUrl()">
+                  Update API URL
+                </button>
+                <button class="btn btn-outline-secondary" onclick="resetApiUrl()">
+                  Reset to Default
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("currentApiDisplay").textContent = API_BASE_URL;
+      const custom = localStorage.getItem("SMARTMED_API_URL");
+      if (custom) document.getElementById("customApiUrlInput").value = custom;
+
+      loadUserSettings();
+    });
+
+    async function loadUserSettings() {
+      try {
+        const s = await SmartMedAPI.settings.get();
+        document.getElementById("setBrowserNotifs").checked = s.browser_notifications;
+        document.getElementById("setSoundAlerts").checked = s.sound_alerts;
+        document.getElementById("setAdvanceMinutes").value = String(s.reminder_advance_minutes || 0);
+        document.getElementById("setThemeSelect").value = s.theme || "light";
+        if (s.timezone) document.getElementById("setTimezone").value = s.timezone;
+      } catch (e) {
+        // Fallback default
+      }
+    }
+
+    function previewTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("smartmed_theme", theme);
+    }
+
+    async function handleSaveSettings(e) {
+      e.preventDefault();
+      const payload = {
+        browser_notifications: document.getElementById("setBrowserNotifs").checked,
+        sound_alerts: document.getElementById("setSoundAlerts").checked,
+        reminder_advance_minutes: parseInt(document.getElementById("setAdvanceMinutes").value),
+        theme: document.getElementById("setThemeSelect").value,
+        timezone: document.getElementById("setTimezone").value
+      };
+
+      try {
+        await SmartMedAPI.settings.update(payload);
+        showToast("Preferences saved successfully!", "success");
+      } catch (err) {
+        showToast("Error updating settings: " + err.message, "error");
+      }
+    }
+
+    function saveCustomApiUrl() {
+      const val = document.getElementById("customApiUrlInput").value.trim();
+      if (!val) return;
+      localStorage.setItem("SMARTMED_API_URL", val);
+      showToast("Custom API URL saved! Reloading...", "success");
+      setTimeout(() => window.location.reload(), 800);
+    }
+
+    function resetApiUrl() {
+      localStorage.removeItem("SMARTMED_API_URL");
+      showToast("API URL reset to auto-detect. Reloading...", "info");
+      setTimeout(() => window.location.reload(), 800);
+    }
+  </script>
+</body>
+</html>

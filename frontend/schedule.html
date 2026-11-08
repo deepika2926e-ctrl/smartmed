@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Manager - SmartMed Healthcare</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand text-decoration-none">
+          <i class="fa-solid fa-notes-medical text-primary fs-4"></i>
+          <span>Smart<strong>Med</strong></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Core</div>
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+        <a href="today.html" class="sidebar-link"><i class="fa-solid fa-calendar-day"></i> Today's Doses</a>
+        <a href="medicines.html" class="sidebar-link"><i class="fa-solid fa-pills"></i> My Medicines</a>
+        <a href="add-medicine.html" class="sidebar-link"><i class="fa-solid fa-plus-circle"></i> Add Medicine</a>
+
+        <div class="sidebar-section-title">Schedules & Alerts</div>
+        <a href="schedule.html" class="sidebar-link active"><i class="fa-solid fa-calendar-days"></i> Schedule Manager</a>
+        <a href="upcoming.html" class="sidebar-link"><i class="fa-solid fa-clock"></i> Upcoming Alerts</a>
+        <a href="history.html" class="sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i> Dose History</a>
+        <a href="notifications.html" class="sidebar-link">
+          <i class="fa-solid fa-bell"></i> Notifications
+          <span class="badge bg-danger rounded-pill ms-auto notification-badge-count" style="display:none;">0</span>
+        </a>
+
+        <div class="sidebar-section-title">Medical Reference</div>
+        <a href="medicine-search.html" class="sidebar-link"><i class="fa-solid fa-book-medical"></i> Medicine Search</a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> Reports & Analytics</a>
+
+        <div class="sidebar-section-title">Preferences</div>
+        <a href="profile.html" class="sidebar-link"><i class="fa-solid fa-user-circle"></i> Profile</a>
+        <a href="settings.html" class="sidebar-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2 overflow-hidden">
+          <div class="stat-icon primary current-user-initials rounded-circle" style="width:36px; height:36px; font-size:0.85rem;">U</div>
+          <div class="overflow-hidden" style="max-width: 130px;">
+            <div class="current-user-name fw-bold small text-truncate text-white">Patient</div>
+            <div class="current-user-email small text-truncate text-muted" style="font-size:0.75rem;">user@smartmed.com</div>
+          </div>
+        </div>
+        <button onclick="logoutUser()" class="btn btn-sm btn-outline-danger border-0 p-1" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <header class="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="mobile-nav-toggle"><i class="fa-solid fa-bars"></i></button>
+          <h5 class="mb-0 fw-bold">Medication Schedule Manager</h5>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-primary-smart" onclick="openCreateScheduleModal()">
+            <i class="fa-solid fa-plus me-1"></i> New Reminder Time
+          </button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Time-of-Day Slots Grid -->
+        <div class="row g-4 mb-4">
+          <!-- Morning Slot -->
+          <div class="col-md-6 col-xl-3">
+            <div class="solid-card h-100 p-3">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="badge bg-warning-subtle text-warning-emphasis fw-bold">
+                  <i class="fa-solid fa-sun me-1"></i> Morning
+                </span>
+                <small class="text-muted">06:00 - 11:59</small>
+              </div>
+              <div id="slotMorning" class="d-flex flex-column gap-2 mt-2">
+                <!-- Dynamically filled -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Afternoon Slot -->
+          <div class="col-md-6 col-xl-3">
+            <div class="solid-card h-100 p-3">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="badge bg-info-subtle text-info-emphasis fw-bold">
+                  <i class="fa-solid fa-cloud-sun me-1"></i> Afternoon
+                </span>
+                <small class="text-muted">12:00 - 16:59</small>
+              </div>
+              <div id="slotAfternoon" class="d-flex flex-column gap-2 mt-2">
+                <!-- Dynamically filled -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Evening Slot -->
+          <div class="col-md-6 col-xl-3">
+            <div class="solid-card h-100 p-3">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="badge bg-primary-subtle text-primary fw-bold">
+                  <i class="fa-solid fa-cloud-moon me-1"></i> Evening
+                </span>
+                <small class="text-muted">17:00 - 20:59</small>
+              </div>
+              <div id="slotEvening" class="d-flex flex-column gap-2 mt-2">
+                <!-- Dynamically filled -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Night Slot -->
+          <div class="col-md-6 col-xl-3">
+            <div class="solid-card h-100 p-3">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="badge bg-purple-subtle text-dark fw-bold" style="background:#f3e8ff;">
+                  <i class="fa-solid fa-moon me-1 text-purple"></i> Night
+                </span>
+                <small class="text-muted">21:00 - 05:59</small>
+              </div>
+              <div id="slotNight" class="d-flex flex-column gap-2 mt-2">
+                <!-- Dynamically filled -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Schedules Table View -->
+        <div class="glass-card">
+          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <h6 class="fw-bold mb-0"><i class="fa-solid fa-list-check text-primary me-2"></i>Active Schedules List</h6>
+            <a href="today.html" class="btn btn-sm btn-outline-primary">
+              <i class="fa-solid fa-calendar-day me-1"></i> View Today's Checklist
+            </a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Medicine</th>
+                  <th>Reminder Time</th>
+                  <th>Slot</th>
+                  <th>Days of Week</th>
+                  <th>Dose Quantity</th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="schedulesTableBody">
+                <tr>
+                  <td colspan="7" class="text-center py-4 text-muted">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                    <span class="ms-2">Loading schedules...</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Create / Edit Schedule Modal -->
+  <div class="modal fade" id="scheduleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="scheduleModalTitle">Create Reminder Schedule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="scheduleForm" onsubmit="handleSaveSchedule(event)">
+          <div class="modal-body">
+            <input type="hidden" id="modalScheduleId">
+
+            <div class="mb-3" id="medSelectGroup">
+              <label class="form-label-smart">Select Medication *</label>
+              <select id="modalMedSelect" class="form-control-smart" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label-smart">Reminder Time *</label>
+                <input type="time" id="modalReminderTime" class="form-control-smart" required value="08:00">
+              </div>
+              <div class="col-6">
+                <label class="form-label-smart">Time of Day Slot</label>
+                <select id="modalTimeOfDay" class="form-control-smart">
+                  <option value="morning">Morning</option>
+                  <option value="afternoon">Afternoon</option>
+                  <option value="evening">Evening</option>
+                  <option value="night">Night</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label-smart">Dosage Quantity</label>
+              <input type="text" id="modalDosageQuantity" class="form-control-smart" value="1 tablet" placeholder="e.g. 1 tablet, 2 capsules, 10 ml">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label-smart mb-2">Days of Week</label>
+              <div class="d-flex flex-wrap gap-2">
+                <label class="btn btn-sm btn-outline-primary day-checkbox-btn">
+                  <input type="checkbox" name="days" value="Mon" checked class="me-1"> Mon
+                </label>
+                <label class="btn btn-sm btn-outline-primary day-checkbox-btn">
+                  <input type="checkbox" name="days" value="Tue" checked class="me-1"> Tue
+                </label>
+                <label class="btn btn-sm btn-outline-primary day-checkbox-btn">
+                  <input type="checkbox" name="days" value="Wed" checked class="me-1"> Wed
+                </label>
+                <label class="btn btn-sm btn-outline-primary day-checkbox-btn">
+                  <input type="checkbox" name="days" value="Thu" checked class="me-1"> Thu
+                </label>
+                <label class="btn btn-sm btn-outline-primary day-checkbox-btn">
+                  <input type="checkbox" name="days" value="Fri" checked class="me-1"> Fri
+                </label>
+                <label class="btn btn-sm btn-outline-primary day-checkbox-btn">
+                  <input type="checkbox" name="days" value="Sat" checked class="me-1"> Sat
+                </label>
+                <label class="btn btn-sm btn-outline-primary day-checkbox-btn">
+                  <input type="checkbox" name="days" value="Sun" checked class="me-1"> Sun
+                </label>
+              </div>
+            </div>
+
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" id="modalIsActive" checked>
+              <label class="form-check-label" for="modalIsActive">Schedule Active</label>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary-smart" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-smart">Save Schedule</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    let schedulesList = [];
+    let userMedicines = [];
+    let schedModal = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      schedModal = new bootstrap.Modal(document.getElementById("scheduleModal"));
+      loadScheduleData();
+    });
+
+    async function loadScheduleData() {
+      try {
+        [schedulesList, userMedicines] = await Promise.all([
+          SmartMedAPI.schedules.list(),
+          SmartMedAPI.medicines.list()
+        ]);
+        renderSlots();
+        renderTable();
+      } catch (e) {
+        showToast("Error loading schedules: " + e.message, "error");
+      }
+    }
+
+    function renderSlots() {
+      const slots = {
+        morning: document.getElementById("slotMorning"),
+        afternoon: document.getElementById("slotAfternoon"),
+        evening: document.getElementById("slotEvening"),
+        night: document.getElementById("slotNight")
+      };
+
+      Object.values(slots).forEach(s => s.innerHTML = "");
+
+      schedulesList.forEach(s => {
+        let slotKey = (s.time_of_day || "").toLowerCase();
+        if (!slots[slotKey]) slotKey = "morning";
+
+        const card = document.createElement("div");
+        card.className = "p-2 border rounded bg-light-subtle d-flex align-items-center justify-content-between";
+        card.innerHTML = `
+          <div>
+            <div class="fw-bold text-dark small text-truncate" style="max-width:140px;">${s.medicine_name}</div>
+            <small class="text-muted"><i class="fa-regular fa-clock me-1"></i>${formatTime(s.reminder_time)} &bull; ${s.dosage_quantity}</small>
+          </div>
+          <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteSchedule(${s.id})" title="Delete">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        `;
+        slots[slotKey].appendChild(card);
+      });
+
+      // Show empty state for empty slots
+      Object.entries(slots).forEach(([key, el]) => {
+        if (el.children.length === 0) {
+          el.innerHTML = `<small class="text-muted fst-italic">No doses in this slot.</small>`;
+        }
+      });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("schedulesTableBody");
+      if (schedulesList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">
+              No schedules created yet. Click "New Reminder Time" to schedule a dose!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = schedulesList.map(s => `
+        <tr>
+          <td>
+            <strong>${s.medicine_name}</strong>
+            <small class="text-muted d-block">${s.medicine_dosage || ''} ${s.medicine_form || ''}</small>
+          </td>
+          <td>
+            <span class="badge bg-light text-dark border font-monospace fs-6">
+              <i class="fa-regular fa-clock me-1 text-primary"></i>${formatTime(s.reminder_time)}
+            </span>
+          </td>
+          <td class="text-capitalize">${s.time_of_day}</td>
+          <td><small class="text-muted">${s.days_of_week}</small></td>
+          <td>${s.dosage_quantity}</td>
+          <td>
+            <span class="badge-status ${s.is_active ? 'badge-taken' : 'badge-missed'}">
+              ${s.is_active ? 'Active' : 'Paused'}
+            </span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteSchedule(${s.id})" title="Delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function formatTime(time24) {
+      if (!time24) return "";
+      const [h, m] = time24.split(":");
+      const d = new Date();
+      d.setHours(parseInt(h), parseInt(m));
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function openCreateScheduleModal() {
+      if (userMedicines.length === 0) {
+        showToast("Please add at least one medication first before creating a schedule.", "warning");
+        setTimeout(() => window.location.href = "add-medicine.html", 1000);
+        return;
+      }
+
+      document.getElementById("modalScheduleId").value = "";
+      document.getElementById("scheduleModalTitle").textContent = "Create Reminder Schedule";
+
+      const select = document.getElementById("modalMedSelect");
+      select.innerHTML = userMedicines.map(m => `
+        <option value="${m.id}">${m.name} (${m.dosage} - ${m.frequency})</option>
+      `).join("");
+
+      document.getElementById("modalReminderTime").value = "08:00";
+      document.getElementById("modalTimeOfDay").value = "morning";
+      document.getElementById("modalDosageQuantity").value = "1 tablet";
+      document.getElementById("modalIsActive").checked = true;
+
+      // Select all days
+      document.querySelectorAll("input[name='days']").forEach(cb => cb.checked = true);
+
+      schedModal.show();
+    }
+
+    async function handleSaveSchedule(e) {
+      e.preventDefault();
+      const schedId = document.getElementById("modalScheduleId").value;
+      const medicine_id = parseInt(document.getElementById("modalMedSelect").value);
+      const reminder_time = document.getElementById("modalReminderTime").value;
+      const time_of_day = document.getElementById("modalTimeOfDay").value;
+      const dosage_quantity = document.getElementById("modalDosageQuantity").value.trim();
+      const is_active = document.getElementById("modalIsActive").checked;
+
+      const checkedDays = Array.from(document.querySelectorAll("input[name='days']:checked")).map(cb => cb.value);
+      const days_of_week = checkedDays.join(",") || "Mon,Tue,Wed,Thu,Fri,Sat,Sun";
+
+      try {
+        if (schedId) {
+          await SmartMedAPI.schedules.update(schedId, {
+            reminder_time,
+            time_of_day,
+            days_of_week,
+            dosage_quantity,
+            is_active
+          });
+          showToast("Schedule updated successfully!", "success");
+        } else {
+          await SmartMedAPI.schedules.create({
+            medicine_id,
+            reminder_time,
+            time_of_day,
+            days_of_week,
+            dosage_quantity,
+            is_active
+          });
+          showToast("Reminder schedule created!", "success");
+        }
+        schedModal.hide();
+        loadScheduleData();
+      } catch (err) {
+        showToast("Failed to save schedule: " + err.message, "error");
+      }
+    }
+
+    async function deleteSchedule(id) {
+      if (confirm("Are you sure you want to delete this reminder schedule?")) {
+        try {
+          await SmartMedAPI.schedules.delete(id);
+          showToast("Schedule removed.", "info");
+          loadScheduleData();
+        } catch (e) {
+          showToast("Failed to delete: " + e.message, "error");
+        }
+      }
+    }
+  </script>
+</body>
+</html>

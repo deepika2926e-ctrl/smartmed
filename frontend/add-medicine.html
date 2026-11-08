@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Medicine - SmartMed Healthcare</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand text-decoration-none">
+          <i class="fa-solid fa-notes-medical text-primary fs-4"></i>
+          <span>Smart<strong>Med</strong></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Core</div>
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+        <a href="today.html" class="sidebar-link"><i class="fa-solid fa-calendar-day"></i> Today's Doses</a>
+        <a href="medicines.html" class="sidebar-link"><i class="fa-solid fa-pills"></i> My Medicines</a>
+        <a href="add-medicine.html" class="sidebar-link active"><i class="fa-solid fa-plus-circle"></i> Add Medicine</a>
+
+        <div class="sidebar-section-title">Schedules & Alerts</div>
+        <a href="schedule.html" class="sidebar-link"><i class="fa-solid fa-calendar-days"></i> Schedule Manager</a>
+        <a href="upcoming.html" class="sidebar-link"><i class="fa-solid fa-clock"></i> Upcoming Alerts</a>
+        <a href="history.html" class="sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i> Dose History</a>
+        <a href="notifications.html" class="sidebar-link">
+          <i class="fa-solid fa-bell"></i> Notifications
+          <span class="badge bg-danger rounded-pill ms-auto notification-badge-count" style="display:none;">0</span>
+        </a>
+
+        <div class="sidebar-section-title">Medical Reference</div>
+        <a href="medicine-search.html" class="sidebar-link"><i class="fa-solid fa-book-medical"></i> Medicine Search</a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> Reports & Analytics</a>
+
+        <div class="sidebar-section-title">Preferences</div>
+        <a href="profile.html" class="sidebar-link"><i class="fa-solid fa-user-circle"></i> Profile</a>
+        <a href="settings.html" class="sidebar-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2 overflow-hidden">
+          <div class="stat-icon primary current-user-initials rounded-circle" style="width:36px; height:36px; font-size:0.85rem;">U</div>
+          <div class="overflow-hidden" style="max-width: 130px;">
+            <div class="current-user-name fw-bold small text-truncate text-white">Patient</div>
+            <div class="current-user-email small text-truncate text-muted" style="font-size:0.75rem;">user@smartmed.com</div>
+          </div>
+        </div>
+        <button onclick="logoutUser()" class="btn btn-sm btn-outline-danger border-0 p-1" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <header class="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="mobile-nav-toggle"><i class="fa-solid fa-bars"></i></button>
+          <h5 class="mb-0 fw-bold">Add Prescribed Medication</h5>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <a href="medicines.html" class="btn btn-sm btn-secondary-smart">
+            <i class="fa-solid fa-arrow-left"></i> Back to Medicines
+          </a>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <div class="glass-card p-4">
+              <div class="mb-4 pb-2 border-bottom">
+                <h5 class="fw-bold mb-1"><i class="fa-solid fa-prescription-bottle-medical text-primary me-2"></i>Prescription Medication Details</h5>
+                <p class="text-muted small">Enter the exact dosage and scheduling instructions specified by your licensed physician.</p>
+              </div>
+
+              <form id="addMedicineForm" onsubmit="handleAddMedicine(event)">
+                <div class="row g-3 mb-3">
+                  <div class="col-md-7">
+                    <label class="form-label-smart" for="medName">
+                      <i class="fa-solid fa-pills text-primary"></i> Brand or Medicine Name *
+                    </label>
+                    <input type="text" id="medName" class="form-control-smart" required placeholder="e.g. Amoxicillin, Lipitor, Metformin">
+                  </div>
+                  <div class="col-md-5">
+                    <label class="form-label-smart" for="medGenericName">
+                      <i class="fa-solid fa-flask text-secondary"></i> Generic Name
+                    </label>
+                    <input type="text" id="medGenericName" class="form-control-smart" placeholder="e.g. Amoxicillin trihydrate">
+                  </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-4">
+                    <label class="form-label-smart" for="medCategory">
+                      <i class="fa-solid fa-tag text-primary"></i> Category
+                    </label>
+                    <select id="medCategory" class="form-control-smart">
+                      <option value="General">General Medication</option>
+                      <option value="Antibiotic">Antibiotic</option>
+                      <option value="Antihypertensive">Antihypertensive (Blood Pressure)</option>
+                      <option value="Analgesic">Analgesic / Pain Relief</option>
+                      <option value="Antidiabetic">Antidiabetic</option>
+                      <option value="Cardiovascular">Cardiovascular / Heart</option>
+                      <option value="Gastrointestinal">Gastrointestinal (Acid/Digestion)</option>
+                      <option value="Respiratory">Respiratory / Inhaler</option>
+                      <option value="Mental Health">Mental Health / SSRI</option>
+                      <option value="Vitamins & Minerals">Vitamins & Minerals</option>
+                      <option value="Other">Other Category</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label-smart" for="medDosage">
+                      <i class="fa-solid fa-weight-scale text-primary"></i> Prescribed Dosage *
+                    </label>
+                    <input type="text" id="medDosage" class="form-control-smart" required placeholder="e.g. 500 mg, 10 ml, 2 puffs">
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label-smart" for="medForm">
+                      <i class="fa-solid fa-shapes text-primary"></i> Formulation
+                    </label>
+                    <select id="medForm" class="form-control-smart">
+                      <option value="Tablet">Tablet</option>
+                      <option value="Capsule">Capsule</option>
+                      <option value="Syrup">Syrup / Oral Liquid</option>
+                      <option value="Injection">Injection</option>
+                      <option value="Inhaler">Inhaler / Spray</option>
+                      <option value="Drops">Eye/Ear Drops</option>
+                      <option value="Topical">Topical Ointment / Cream</option>
+                      <option value="Patch">Transdermal Patch</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="medFrequency">
+                      <i class="fa-solid fa-repeat text-primary"></i> Frequency
+                    </label>
+                    <select id="medFrequency" class="form-control-smart">
+                      <option value="Once daily">Once daily</option>
+                      <option value="Twice daily">Twice daily (Every 12 hours)</option>
+                      <option value="3 times daily">3 times daily (Every 8 hours)</option>
+                      <option value="4 times daily">4 times daily (Every 6 hours)</option>
+                      <option value="Every other day">Every other day</option>
+                      <option value="Weekly">Weekly</option>
+                      <option value="As needed (PRN)">As needed (PRN)</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="medInstructions">
+                      <i class="fa-solid fa-utensils text-primary"></i> Instructions / Food Relation
+                    </label>
+                    <input type="text" id="medInstructions" class="form-control-smart" placeholder="e.g. Take after breakfast with a full glass of water">
+                  </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="medStartDate">
+                      <i class="fa-regular fa-calendar text-primary"></i> Start Date *
+                    </label>
+                    <input type="date" id="medStartDate" class="form-control-smart" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="medEndDate">
+                      <i class="fa-regular fa-calendar-xmark text-muted"></i> End Date (Optional)
+                    </label>
+                    <input type="date" id="medEndDate" class="form-control-smart" placeholder="Leave blank for ongoing medications">
+                  </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="medDoctorName">
+                      <i class="fa-solid fa-user-doctor text-primary"></i> Prescribing Doctor
+                    </label>
+                    <input type="text" id="medDoctorName" class="form-control-smart" placeholder="Dr. Robert Smith, MD">
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label-smart" for="medNotes">
+                      <i class="fa-regular fa-note-sticky text-muted"></i> Personal Notes
+                    </label>
+                    <input type="text" id="medNotes" class="form-control-smart" placeholder="e.g. Keep in bedside drawer">
+                  </div>
+                </div>
+
+                <!-- Schedule Auto-Creation Block -->
+                <div class="p-3 bg-light-subtle border rounded-3 mb-3">
+                  <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="autoScheduleToggle" checked onchange="toggleScheduleOptions(this.checked)">
+                    <label class="form-check-label fw-semibold" for="autoScheduleToggle">
+                      Automatically create initial reminder schedule
+                    </label>
+                  </div>
+                  <div id="scheduleTimeRow" class="row g-2 align-items-center">
+                    <div class="col-sm-6">
+                      <label class="small text-muted mb-1 d-block">First Reminder Time (24h or AM/PM):</label>
+                      <input type="time" id="schedTime1" class="form-control-smart" value="08:00">
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="small text-muted mb-1 d-block">Time of Day Slot:</label>
+                      <select id="schedSlot1" class="form-control-smart">
+                        <option value="morning">Morning</option>
+                        <option value="afternoon">Afternoon</option>
+                        <option value="evening">Evening</option>
+                        <option value="night">Night</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Prescription File Upload -->
+                <div class="mb-4">
+                  <label class="form-label-smart" for="prescriptionFile">
+                    <i class="fa-solid fa-file-medical text-primary"></i> Attach Prescription Scan / Image (Optional)
+                  </label>
+                  <input type="file" id="prescriptionFile" class="form-control-smart" accept=".jpg,.jpeg,.png,.webp,.pdf" onchange="previewPrescriptionFile(this)">
+                  <small class="text-muted d-block mt-1">Accepted formats: JPG, PNG, WEBP, PDF (Max 10MB)</small>
+                  <div id="filePreviewContainer" class="mt-2 d-none">
+                    <span class="badge bg-secondary" id="filePreviewBadge"></span>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-end gap-3 pt-3 border-top">
+                  <a href="medicines.html" class="btn btn-secondary-smart">Cancel</a>
+                  <button type="submit" id="submitMedicineBtn" class="btn btn-primary-smart px-4">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Save Medication
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Set default start date to today
+      const todayStr = new Date().toISOString().split("T")[0];
+      document.getElementById("medStartDate").value = todayStr;
+
+      // Check query param for prefilled medicine name from search page
+      const urlParams = new URLSearchParams(window.location.search);
+      const prefillName = urlParams.get("name");
+      const prefillCat = urlParams.get("cat");
+      if (prefillName) {
+        document.getElementById("medName").value = prefillName;
+      }
+      if (prefillCat) {
+        const catSelect = document.getElementById("medCategory");
+        for (let opt of catSelect.options) {
+          if (opt.value.toLowerCase() === prefillCat.toLowerCase()) {
+            opt.selected = true;
+            break;
+          }
+        }
+      }
+    });
+
+    function toggleScheduleOptions(isChecked) {
+      document.getElementById("scheduleTimeRow").style.display = isChecked ? "flex" : "none";
+    }
+
+    function previewPrescriptionFile(input) {
+      const container = document.getElementById("filePreviewContainer");
+      const badge = document.getElementById("filePreviewBadge");
+      if (input.files && input.files[0]) {
+        badge.textContent = `Selected: ${input.files[0].name} (${Math.round(input.files[0].size / 1024)} KB)`;
+        container.classList.remove("d-none");
+      } else {
+        container.classList.add("d-none");
+      }
+    }
+
+    async function handleAddMedicine(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById("submitMedicineBtn");
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Saving...`;
+
+      try {
+        const medData = {
+          name: document.getElementById("medName").value.trim(),
+          generic_name: document.getElementById("medGenericName").value.trim() || null,
+          category: document.getElementById("medCategory").value,
+          dosage: document.getElementById("medDosage").value.trim(),
+          form: document.getElementById("medForm").value,
+          frequency: document.getElementById("medFrequency").value,
+          instructions: document.getElementById("medInstructions").value.trim() || null,
+          start_date: document.getElementById("medStartDate").value,
+          end_date: document.getElementById("medEndDate").value || null,
+          doctor_name: document.getElementById("medDoctorName").value.trim() || null,
+          notes: document.getElementById("medNotes").value.trim() || null,
+          status: "active"
+        };
+
+        const newMed = await SmartMedAPI.medicines.create(medData);
+
+        // Auto schedule if toggled
+        const shouldSchedule = document.getElementById("autoScheduleToggle").checked;
+        if (shouldSchedule) {
+          const timeVal = document.getElementById("schedTime1").value || "08:00";
+          const slotVal = document.getElementById("schedSlot1").value || "morning";
+          await SmartMedAPI.schedules.create({
+            medicine_id: newMed.id,
+            reminder_time: timeVal,
+            time_of_day: slotVal,
+            days_of_week: "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+            dosage_quantity: `1 ${newMed.form.toLowerCase()}`,
+            is_active: true
+          });
+        }
+
+        // Upload prescription if attached
+        const fileInput = document.getElementById("prescriptionFile");
+        if (fileInput.files && fileInput.files[0]) {
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+          formData.append("medicine_id", newMed.id);
+          formData.append("doctor_name", medData.doctor_name || "");
+          formData.append("prescription_date", medData.start_date);
+          await SmartMedAPI.prescriptions.upload(formData);
+        }
+
+        showToast(`'${newMed.name}' successfully added to your active medications!`, "success");
+        setTimeout(() => {
+          window.location.href = "medicines.html";
+        }, 800);
+
+      } catch (err) {
+        showToast("Failed to save medication: " + err.message, "error");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-floppy-disk me-1"></i> Save Medication`;
+      }
+    }
+  </script>
+</body>
+</html>
