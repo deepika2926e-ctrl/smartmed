@@ -1,0 +1,6 @@
+# The site is a static multi-page frontend that lives in /frontend.
+# Without this, Netlify publishes the repository root, which has no index.html,
+# so every visit to "/" returns "Page not found".
+[build]
+  publish = "frontend"
+  command = ""
